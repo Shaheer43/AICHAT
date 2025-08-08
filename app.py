@@ -1,5 +1,6 @@
 # app.py
 import streamlit as st
+import os
 from rag_chain import (
     load_faiss_index,
     get_rag_chain_with_memory
@@ -35,7 +36,7 @@ for msg in st.session_state.messages:
         if msg["role"] == "assistant" and msg.get("sources"):
             st.markdown("**📄 Sources:**")
             for source, page in msg["sources"]:
-                st.markdown(f"- **{source}**, Page `{page}`")
+                st.markdown(f"- **{source}**, Page {page}")
 
 # --- CHAT INPUT ---
 query = st.chat_input("Ask a question:")
@@ -64,14 +65,14 @@ if query:
                             for doc in docs if doc.page_content.strip()
                         }
             except Exception as e:
-                answer = f"Something went wrong: `{e}`"
+                answer = f"Something went wrong: {e}"
                 sources = []
 
         st.markdown(answer)
         if sources:
             st.markdown("**📄 Sources:**")
             for source, page in sorted(sources):
-                st.markdown(f"- **{source}**, Page `{page}`")
+                st.markdown(f"- **{source}**, Page {page}")
 
         st.session_state.messages.append({
             "role": "assistant",

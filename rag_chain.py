@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_ollama import OllamaEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.prompts import PromptTemplate
 from langchain.chains import ConversationalRetrievalChain
@@ -18,15 +18,18 @@ load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # Config
-EMBED_MODEL = "nomic-embed-text"
+EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 CHUNK_SIZE = 800
 CHUNK_OVERLAP = 200
 RETRIEVAL_K = 3
 
+def get_embeddings():
+    return HuggingFaceEmbeddings(model_name=EMBED_MODEL)
+
 def create_faiss_index(docs, index_path="vector_store"):
     print("🔁 Embedding documents and creating FAISS index...")
     start = time.time()
-    embeddings = OllamaEmbeddings(model=EMBED_MODEL)
+    embeddings = get_embeddings()
     vectorstore = FAISS.from_documents(tqdm(docs, desc="🔗 Embedding"), embedding=embeddings)
     vectorstore.save_local(index_path)
     print(f"✅ Saved FAISS index at {index_path}/index.faiss")
@@ -34,7 +37,7 @@ def create_faiss_index(docs, index_path="vector_store"):
 
 def load_faiss_index(index_path="vector_store"):
     print(f"📦 Loading FAISS index from: {index_path}")
-    embeddings = OllamaEmbeddings(model=EMBED_MODEL)
+    embeddings = get_embeddings()
     return FAISS.load_local(index_path, embeddings, allow_dangerous_deserialization=True)
 
 def load_documents(folder_path):
