@@ -1,0 +1,9 @@
+streamlit
+tqdm
+python-dotenv
+faiss-cpu
+langchain
+langchain-community
+langchain-groq
+langchain-ollama
+pypdf
