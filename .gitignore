@@ -1,0 +1,21 @@
+# API keys
+.env
+
+# Source documents
+Source/
+source/
+docs/
+source_documents/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+env/
+.env/
+
+# OS junk
+.DS_Store
+Thumbs.db
